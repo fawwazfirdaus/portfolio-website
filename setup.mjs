@@ -35,15 +35,25 @@ const workPage = `export default function Page() {
 `;
 
 const deleteFolderRecursive = async (path) => {
-  const stat = await fs.stat(path);
-  if (stat.isDirectory()) {
-    const files = await fs.readdir(path);
-    await Promise.all(
-      files.map((file) => deleteFolderRecursive(`${path}/${file}`))
-    );
-    await fs.rmdir(path);
-  } else {
-    await fs.unlink(path);
+  try {
+    const exists = await fs.access(path).then(() => true).catch(() => false);
+    if (!exists) {
+      console.log(`Directory not found, skipping: ${path}`);
+      return;
+    }
+
+    const stat = await fs.stat(path);
+    if (stat.isDirectory()) {
+      const files = await fs.readdir(path);
+      await Promise.all(
+        files.map((file) => deleteFolderRecursive(`${path}/${file}`))
+      );
+      await fs.rmdir(path);
+    } else {
+      await fs.unlink(path);
+    }
+  } catch (err) {
+    console.error(`Error while processing ${path}:`, err);
   }
 };
 
