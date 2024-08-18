@@ -7,7 +7,7 @@ import ViewCounter from '../view-counter';
 import { increment } from 'app/db/actions';
 import { unstable_noStore as noStore } from 'next/cache';
 import { Metadata, ResolvingMetadata } from 'next';
-import { GetStaticPaths } from 'next';
+import ErrorBoundary from 'app/components/error-boundary';
 
 export async function generateStaticParams() {
   const posts = getBlogPosts();
@@ -91,20 +91,13 @@ function formatDate(date: string) {
   }
 }
 
-type Props = {
-  params: { slug: string };
-};
-
-export default function Blog({ params }: Props) {
-  console.log('Fetching blog post for slug:', params.slug);
-  let post = getBlogPosts().find((post) => post.slug === params.slug);
+export default async function Blog({ params }: { params: { slug: string } }) {
+  const posts = await getBlogPosts();
+  const post = posts.find((p) => p.slug === params.slug);
 
   if (!post) {
-    console.log('Post not found for slug:', params.slug);
     notFound();
   }
-
-  console.log('Post found:', post.metadata.title);
 
   return (
     <section>
@@ -140,7 +133,9 @@ export default function Blog({ params }: Props) {
           </p>
         </Suspense>
         <Suspense fallback={<p className="h-5" />}>
-          <Views slug={post.slug} />
+          <ErrorBoundary fallback={<p>Failed to load views</p>}>
+            <Views slug={post.slug} />
+          </ErrorBoundary>
         </Suspense>
       </div>
       <article className="prose prose-quoteless prose-neutral dark:prose-invert">
@@ -153,7 +148,12 @@ export default function Blog({ params }: Props) {
 let incrementViews = cache(increment);
 
 async function Views({ slug }: { slug: string }) {
-  let views = await getViewsCount();
-  incrementViews(slug);
-  return <ViewCounter allViews={views} slug={slug} />;
+  try {
+    let views = await getViewsCount();
+    await incrementViews(slug);
+    return <ViewCounter allViews={views} slug={slug} />;
+  } catch (error) {
+    console.error('Error loading views:', error);
+    return <p>Views unavailable</p>;
+  }
 }
