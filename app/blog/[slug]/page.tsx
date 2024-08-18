@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import { Suspense, cache } from 'react';
 import { notFound } from 'next/navigation';
 import { CustomMDX } from 'app/components/mdx';
@@ -7,10 +6,20 @@ import { getBlogPosts } from 'app/db/blog';
 import ViewCounter from '../view-counter';
 import { increment } from 'app/db/actions';
 import { unstable_noStore as noStore } from 'next/cache';
+import { Metadata, ResolvingMetadata } from 'next';
+import { GetStaticPaths } from 'next';
 
-export async function generateMetadata({
-  params,
-}): Promise<Metadata | undefined> {
+export async function generateStaticParams() {
+  const posts = getBlogPosts();
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+
+export async function generateMetadata(
+  { params }: { params: { slug: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata | undefined> {
   let post = getBlogPosts().find((post) => post.slug === params.slug);
   if (!post) {
     return;
@@ -82,12 +91,20 @@ function formatDate(date: string) {
   }
 }
 
-export default function Blog({ params }) {
+type Props = {
+  params: { slug: string };
+};
+
+export default function Blog({ params }: Props) {
+  console.log('Fetching blog post for slug:', params.slug);
   let post = getBlogPosts().find((post) => post.slug === params.slug);
 
   if (!post) {
+    console.log('Post not found for slug:', params.slug);
     notFound();
   }
+
+  console.log('Post found:', post.metadata.title);
 
   return (
     <section>
@@ -108,7 +125,7 @@ export default function Blog({ params }) {
             url: `https://fawwazfirdaus.com/blog/${post.slug}`,
             author: {
               '@type': 'Person',
-              name: 'Lee Robinson',
+              name: 'Fawwaz Firdaus',
             },
           }),
         }}

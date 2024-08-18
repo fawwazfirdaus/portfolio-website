@@ -13,10 +13,10 @@ export const metadata: Metadata = {
     default: 'Fawwaz Firdaus',
     template: '%s | Fawwaz Firdaus',
   },
-  description: 'Developer, writer, and creator.',
+  description: 'Engineer, writer, and creator.',
   openGraph: {
     title: 'Fawwaz Firdaus',
-    description: 'Developer, writer, and creator.',
+    description: 'Engineer, writer, and creator.',
     url: 'https://fawwazfirdaus.com',
     siteName: 'Fawwaz Firdaus',
     locale: 'en_US',
