@@ -1,13 +1,13 @@
-import postgres from 'postgres';
+const postgres = require('postgres');
 
-export const sql = postgres(process.env.POSTGRES_URL!, {
+const sql = postgres(process.env.POSTGRES_URL, {
   ssl: 'allow',
 });
 
 const nextConfig = {
-  experimental: {
-    ppr: true,
-  },
+  // experimental: {
+  //   ppr: true,
+  // },
   logging: {
     fetches: {
       fullUrl: true,
@@ -82,4 +82,4 @@ const securityHeaders = [
   },
 ];
 
-export default nextConfig;
+module.exports = nextConfig;
