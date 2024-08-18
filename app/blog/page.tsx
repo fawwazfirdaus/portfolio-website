@@ -1,15 +1,17 @@
 import Link from 'next/link';
-import { Suspense } from 'react';
 import { getBlogPosts } from 'app/db/blog';
 import { formatDate } from 'app/utils/formatDate';
 
 export const metadata = {
   title: 'Blog',
-  description: 'Read my thoughts on software development, design, and more.',
+  description: 'Read my thoughts on Self Development, AI, Software, and more.',
 };
 
 export default function BlogPage() {
-  let allBlogs = getBlogPosts();
+  let allBlogs = getBlogPosts().map(post => ({
+    ...post,
+    formattedDate: formatDate(post.metadata.publishedAt)
+  }));
 
   return (
     <section>
@@ -35,20 +37,12 @@ export default function BlogPage() {
               <p className="text-neutral-900 dark:text-neutral-100 tracking-tight">
                 {post.metadata.title}
               </p>
-              <Suspense fallback={<p className="h-6" />}>
-                <PublishDate date={post.metadata.publishedAt} />
-              </Suspense>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                {post.formattedDate}
+              </p>
             </div>
           </Link>
         ))}
     </section>
-  );
-}
-
-function PublishDate({ date }: { date: string }) {
-  return (
-    <p className="text-sm text-neutral-600 dark:text-neutral-400">
-      {formatDate(date)}
-    </p>
   );
 }

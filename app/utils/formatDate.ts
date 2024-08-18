@@ -1,33 +1,30 @@
-import { unstable_noStore as noStore } from 'next/cache';
-
 export function formatDate(date: string) {
-  noStore();
-  let currentDate = new Date().getTime();
   if (!date.includes('T')) {
     date = `${date}T00:00:00`;
   }
-  let targetDate = new Date(date).getTime();
-  let timeDifference = Math.abs(currentDate - targetDate);
-  let daysAgo = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-  
-  let fullDate = new Date(date).toLocaleString('en-us', {
+  const targetDate = new Date(date);
+  const fullDate = targetDate.toLocaleString('en-us', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
   });
 
-  if (daysAgo < 1) {
-    return 'Today';
-  } else if (daysAgo < 7) {
-    return `${fullDate} (${daysAgo}d ago)`;
-  } else if (daysAgo < 30) {
-    const weeksAgo = Math.floor(daysAgo / 7)
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - targetDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 1) {
+    return `${fullDate} (Today)`;
+  } else if (diffDays < 7) {
+    return `${fullDate} (${diffDays}d ago)`;
+  } else if (diffDays < 30) {
+    const weeksAgo = Math.floor(diffDays / 7);
     return `${fullDate} (${weeksAgo}w ago)`;
-  } else if (daysAgo < 365) {
-    const monthsAgo = Math.floor(daysAgo / 30)
+  } else if (diffDays < 365) {
+    const monthsAgo = Math.floor(diffDays / 30);
     return `${fullDate} (${monthsAgo}mo ago)`;
   } else {
-    const yearsAgo = Math.floor(daysAgo / 365)
+    const yearsAgo = Math.floor(diffDays / 365);
     return `${fullDate} (${yearsAgo}y ago)`;
   }
 }
