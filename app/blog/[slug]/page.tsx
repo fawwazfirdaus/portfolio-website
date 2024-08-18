@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { Suspense, cache } from 'react';
 import { notFound } from 'next/navigation';
 import { CustomMDX } from 'app/components/mdx';
@@ -6,20 +7,12 @@ import { getBlogPosts } from 'app/db/blog';
 import ViewCounter from '../view-counter';
 import { increment } from 'app/db/actions';
 import { unstable_noStore as noStore } from 'next/cache';
-import { Metadata, ResolvingMetadata } from 'next';
 import ErrorBoundary from 'app/components/error-boundary';
+import { formatDate } from 'app/utils/formatDate';
 
-export async function generateStaticParams() {
-  const posts = getBlogPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
-
-export async function generateMetadata(
-  { params }: { params: { slug: string } },
-  parent: ResolvingMetadata
-): Promise<Metadata | undefined> {
+export async function generateMetadata({
+  params,
+}): Promise<Metadata | undefined> {
   let post = getBlogPosts().find((post) => post.slug === params.slug);
   if (!post) {
     return;
@@ -59,41 +52,40 @@ export async function generateMetadata(
   };
 }
 
-function formatDate(date: string) {
-  noStore();
-  let currentDate = new Date().getTime();
-  if (!date.includes('T')) {
-    date = `${date}T00:00:00`;
-  }
-  let targetDate = new Date(date).getTime();
-  let timeDifference = Math.abs(currentDate - targetDate);
-  let daysAgo = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+// function formatDate(date: string) {
+//   noStore();
+//   let currentDate = new Date().getTime();
+//   if (!date.includes('T')) {
+//     date = `${date}T00:00:00`;
+//   }
+//   let targetDate = new Date(date).getTime();
+//   let timeDifference = Math.abs(currentDate - targetDate);
+//   let daysAgo = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
   
-  let fullDate = new Date(date).toLocaleString('en-us', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
+//   let fullDate = new Date(date).toLocaleString('en-us', {
+//     month: 'long',
+//     day: 'numeric',
+//     year: 'numeric',
+//   });
 
-  if (daysAgo < 1) {
-    return 'Today';
-  } else if (daysAgo < 7) {
-    return `${fullDate} (${daysAgo}d ago)`;
-  } else if (daysAgo < 30) {
-    const weeksAgo = Math.floor(daysAgo / 7)
-    return `${fullDate} (${weeksAgo}w ago)`;
-  } else if (daysAgo < 365) {
-    const monthsAgo = Math.floor(daysAgo / 30)
-    return `${fullDate} (${monthsAgo}mo ago)`;
-  } else {
-    const yearsAgo = Math.floor(daysAgo / 365)
-    return `${fullDate} (${yearsAgo}y ago)`;
-  }
-}
+//   if (daysAgo < 1) {
+//     return 'Today';
+//   } else if (daysAgo < 7) {
+//     return `${fullDate} (${daysAgo}d ago)`;
+//   } else if (daysAgo < 30) {
+//     const weeksAgo = Math.floor(daysAgo / 7)
+//     return `${fullDate} (${weeksAgo}w ago)`;
+//   } else if (daysAgo < 365) {
+//     const monthsAgo = Math.floor(daysAgo / 30)
+//     return `${fullDate} (${monthsAgo}mo ago)`;
+//   } else {
+//     const yearsAgo = Math.floor(daysAgo / 365)
+//     return `${fullDate} (${yearsAgo}y ago)`;
+//   }
+// }
 
-export default async function Blog({ params }: { params: { slug: string } }) {
-  const posts = await getBlogPosts();
-  const post = posts.find((p) => p.slug === params.slug);
+export default async function Blog({ params }) {
+  let post = getBlogPosts().find((post) => post.slug === params.slug);
 
   if (!post) {
     notFound();
