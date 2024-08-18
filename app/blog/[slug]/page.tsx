@@ -83,11 +83,15 @@ function formatDate(date: string) {
 }
 
 export default function Blog({ params }) {
+  console.log('Fetching blog post for slug:', params.slug);
   let post = getBlogPosts().find((post) => post.slug === params.slug);
 
   if (!post) {
+    console.log('Post not found for slug:', params.slug);
     notFound();
   }
+
+  console.log('Post found:', post.metadata.title);
 
   return (
     <section>

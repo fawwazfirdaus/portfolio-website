@@ -56,5 +56,14 @@ function getMDXData(dir) {
 }
 
 export function getBlogPosts() {
-  return getMDXData(path.join(process.cwd(), 'content'));
+  try {
+    const contentDir = path.join(process.cwd(), 'content');
+    console.log('Content directory:', contentDir);
+    const posts = getMDXData(contentDir);
+    console.log('Number of posts found:', posts.length);
+    return posts;
+  } catch (error) {
+    console.error('Error in getBlogPosts:', error);
+    return [];
+  }
 }
