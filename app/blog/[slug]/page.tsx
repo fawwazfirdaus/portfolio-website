@@ -107,12 +107,7 @@ export default async function Blog({ params }) {
 let incrementViews = cache(increment);
 
 async function Views({ slug }: { slug: string }) {
-  try {
-    let views = await getViewsCount();
-    await incrementViews(slug);
-    return <ViewCounter allViews={views} slug={slug} />;
-  } catch (error) {
-    console.error('Error loading views:', error);
-    return <p>Views unavailable</p>;
-  }
+  let views = await getViewsCount();
+  incrementViews(slug);
+  return <ViewCounter allViews={views} slug={slug} />;
 }
