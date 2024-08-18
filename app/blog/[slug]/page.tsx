@@ -108,7 +108,7 @@ export default function Blog({ params }) {
             url: `https://fawwazfirdaus.com/blog/${post.slug}`,
             author: {
               '@type': 'Person',
-              name: 'Lee Robinson',
+              name: 'Fawwaz Firdaus',
             },
           }),
         }}
