@@ -17,8 +17,8 @@ export const {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
     Apple({
-      clientId: process.env.APPLE_CLIENT_ID as string,
-      clientSecret: process.env.APPLE_CLIENT_SECRET as string,
+      clientId: process.env.AUTH_APPLE_ID as string,
+      clientSecret: process.env.AUTH_APPLE_SECRET as string,
     }),
   ],
   pages: {
