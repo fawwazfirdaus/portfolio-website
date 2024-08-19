@@ -92,9 +92,7 @@ export default async function Blog({ params }) {
           </p>
         </Suspense>
         <Suspense fallback={<p className="h-5" />}>
-          <ErrorBoundary fallback={<p>Failed to load views</p>}>
-            <Views slug={post.slug} />
-          </ErrorBoundary>
+          <Views slug={post.slug} />
         </Suspense>
       </div>
       <article className="prose prose-quoteless prose-neutral dark:prose-invert">
@@ -113,6 +111,6 @@ async function Views({ slug }: { slug: string }) {
     return <ViewCounter allViews={views} slug={slug} />;
   } catch (error) {
     console.error('Error loading views:', error);
-    return <p className="h-5">Loading...</p>;
+    return <p className="text-neutral-600 dark:text-neutral-400">Loading...</p>;
   }
 }
