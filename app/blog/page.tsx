@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import ViewCounter from './view-counter';
 import { getViewsCount } from 'app/db/queries';
 import { getBlogPosts } from 'app/db/blog';
@@ -39,9 +40,9 @@ export default function BlogPage() {
               <p className="text-neutral-900 dark:text-neutral-100 tracking-tight">
                 {post.metadata.title}
               </p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                {post.formattedDate}
-              </p>
+              <Suspense fallback={<p className="h-6" />}>
+                <Views slug={post.slug} />
+              </Suspense>
             </div>
           </Link>
         ))}
