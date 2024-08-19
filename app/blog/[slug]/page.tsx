@@ -113,6 +113,6 @@ async function Views({ slug }: { slug: string }) {
     return <ViewCounter allViews={views} slug={slug} />;
   } catch (error) {
     console.error('Error loading views:', error);
-    return <p>Loading...</p>;
+    return <p className="h-5">Loading...</p>;
   }
 }
