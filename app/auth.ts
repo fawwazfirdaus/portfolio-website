@@ -29,19 +29,23 @@ export const {
       name: 'next-auth.csrf-token',
       options: {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'lax',
         path: '/',
-        secure: true
+        secure: process.env.NODE_ENV === 'production'
       }
     },
     pkceCodeVerifier: {
       name: 'next-auth.pkce.code_verifier',
       options: {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'lax',
         path: '/',
-        secure: true
+        secure: process.env.NODE_ENV === 'production'
       }
     }
+  },
+  debug: process.env.NODE_ENV === 'development',
+  session: {
+    strategy: "jwt",
   },
 });
