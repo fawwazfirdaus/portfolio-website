@@ -25,17 +25,8 @@ export const {
     signIn: '/sign-in',
   },
   cookies: {
-    csrfToken: {
-      name: 'next-auth.csrf-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    },
-    pkceCodeVerifier: {
-      name: 'next-auth.pkce.code_verifier',
+    state: {
+      name: 'next-auth.state',
       options: {
         httpOnly: true,
         sameSite: 'lax',

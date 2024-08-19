@@ -17,13 +17,16 @@ export function SignIn() {
   const handleSignIn = async (provider: string) => {
     try {
       console.log(`Attempting to sign in with ${provider}`);
-      const result = await signIn(provider, { redirect: false });
+      const result = await signIn(provider, { 
+        redirect: false,
+        callbackUrl: '/guestbook' 
+      });
       console.log('Sign in result:', result);
       if (result?.error) {
         console.error('Sign in error:', result.error);
       } else if (result?.ok) {
         console.log('Sign in successful');
-        window.location.reload(); // Force a page reload
+        window.location.href = result.url || '/guestbook';
       }
     } catch (error) {
       console.error('Unexpected error during sign in:', error);
