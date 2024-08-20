@@ -24,19 +24,4 @@ export const {
   pages: {
     signIn: '/sign-in',
   },
-  cookies: {
-    state: {
-      name: 'next-auth.state',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    }
-  },
-  debug: process.env.NODE_ENV === 'development',
-  session: {
-    strategy: "jwt",
-  },
 });
